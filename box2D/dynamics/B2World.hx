@@ -715,7 +715,7 @@ class B2World
 				// TODO_ERIN keep a counter on the contact, only respond to M TOIs per contact.
 				
 				var toi:Float = 1.0;
-				if (c.m_flags & B2Contact.e_toiFlag != 0)
+				if ((c.m_flags & B2Contact.e_toiFlag) != 0)
 				{
 					// This contact has a valid cached TOI.
 					toi = c.m_toi;
@@ -859,7 +859,7 @@ class B2World
 					var other:B2Body = cn.other;
 					
 					// Was the other body already added to this island?
-					if (other.m_flags & B2Body.e_islandFlag != 0)
+					if ((other.m_flags & B2Body.e_islandFlag) != 0)
 					{
 						cn = cn.next;continue;
 					}
