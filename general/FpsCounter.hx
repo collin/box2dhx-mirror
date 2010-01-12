@@ -17,6 +17,7 @@ import flash.display.Sprite;
 import flash.Lib;
 import flash.system.System;
 import flash.text.TextField;
+import flash.text.TextFormat;
 class FpsCounter extends Sprite{
 	
 	//======================
@@ -33,11 +34,17 @@ class FpsCounter extends Sprite{
 		
 		// create text field
 		textBox = new TextField();
+		
+		
+		
+		
+		
 		textBox.text = "...";
 		textBox.textColor = 0xaa1144;
 		textBox.selectable = false;
 		
 		textBox2 = new TextField();
+		
 		textBox2.text = "...";
 		textBox2.width = 150;
 		textBox2.textColor = 0xaa1144;
@@ -45,6 +52,7 @@ class FpsCounter extends Sprite{
 		textBox2.y = 15;
 		
 		textBox3 = new TextField();
+		
 		textBox3.text = "...";
 		textBox3.textColor = 0xaa1144;
 		textBox3.selectable = false;

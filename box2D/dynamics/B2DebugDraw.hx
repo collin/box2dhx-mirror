@@ -18,6 +18,7 @@
 package box2D.dynamics;
 
 
+import box2D.common.math.B2Math;
 import box2D.common.math.B2Vec2;
 import box2D.common.B2Color;
 import box2D.common.math.B2XForm;
@@ -73,7 +74,7 @@ class B2DebugDraw
 	}
 	/// Clear flags from the current flags.
 	public function ClearFlags(flags:Int) : Void{
-		m_drawFlags &= ~flags;
+		m_drawFlags &= B2Math.complement(flags);
 	}
 	/// Draw a closed polygon provided in CCW order.
 	public  function DrawPolygon(vertices:Array<B2Vec2>, vertexCount:Int, color:B2Color) : Void{

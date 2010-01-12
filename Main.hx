@@ -27,6 +27,7 @@ import general.FpsCounter;
 import general.FRateLimiter;
 import general.Input;
 
+
 import testBed.Test;
 import testBed.TestBridge;
 import testBed.TestCCD;
@@ -35,6 +36,7 @@ import testBed.TestCrankGearsPulley;
 import testBed.TestRagdoll;
 import testBed.TestStack;
 import testBed.TestTheoJansen;
+
 class Main extends MovieClip
 {
 	
@@ -51,10 +53,12 @@ class Main extends MovieClip
 		
 		m_fpsCounter.x = 7;
 		m_fpsCounter.y = 5;
-		addChildAt(m_fpsCounter, 0);
+		
 		
 		m_sprite = new Sprite();
 		addChild(m_sprite);
+		
+		
 		// input
 		m_input = new Input(m_sprite);
 		
@@ -70,7 +74,7 @@ class Main extends MovieClip
 		
 		instructions_text.defaultTextFormat = instructions_text_format;
 		instructions_text.x = 140;
-		instructions_text.y = 4.5;
+		instructions_text.y = 4;
 		instructions_text.width = 495;
 		instructions_text.height = 61;
 		instructions_text.text = "Box2DFlashAS3 2.0.1\n'Left'/'Right' arrows to go to previous/next example. \n'R' to reset.";
@@ -86,10 +90,12 @@ class Main extends MovieClip
 		m_aboutText.width = 300;
 		m_aboutText.height = 30;
 		addChild(m_aboutText);
-		
+		addChild(m_fpsCounter);
 		// Thanks to everyone who contacted me about this fix
 		instructions_text.mouseEnabled = false;
 		m_aboutText.mouseEnabled = false;
+		
+		
 		
 	}
 	
@@ -98,7 +104,7 @@ class Main extends MovieClip
 		m_sprite.graphics.clear();
 		
 		// toggle between tests
-		if (Input.isKeyPressed(39)){ // Right Arrow
+		if (Input.isKeyPressed(#if flash 39 #else 38  #end)){ // Right Arrow
 			m_currId++;
 			m_currTest = null;
 		}
@@ -167,7 +173,7 @@ class Main extends MovieClip
 		
 		// update counter and limit framerate
 		m_fpsCounter.update();
-		FRateLimiter.limitFrame(30);
+		//FRateLimiter.limitFrame(31);
 		
 	}
 	
@@ -176,8 +182,11 @@ class Main extends MovieClip
 		#if (cpp || neko)
 		neash.Lib.Init("box2D", 640, 360);
 		neash.Lib.SetBackgroundColour(0x414647);
-		neash.Lib.SetFrameRate(120);
+		neash.Lib.SetFrameRate(1000);
+		
 		#end
+		
+		m_fpsCounter = new FpsCounter();
 		new Main();	
 		
 		#if (cpp || neko)
@@ -188,7 +197,7 @@ class Main extends MovieClip
 	//======================
 	// Member data
 	//======================
-	static public var m_fpsCounter:FpsCounter = new FpsCounter();
+	static public var m_fpsCounter:FpsCounter;
 	
 	
 	public var m_currId:Int;

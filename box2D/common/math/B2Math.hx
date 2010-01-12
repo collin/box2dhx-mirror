@@ -18,6 +18,7 @@
 package box2D.common.math;
 import box2D.common.B2Settings;
 import box2D.collision.B2AABB;
+import haxe.Int32;
 class B2Math {
 	#if (neko || cpp)
 	public static inline var MIN_VALUE = 2.2250738585072014e-308;
@@ -29,6 +30,15 @@ class B2Math {
 	/// This function is used to ensure that a floating point number is
 	/// not a NaN or infinity.
 	public function new() { }
+	
+	
+	public static inline function complement (i : Int) : Int {
+		#if neko
+		return Int32.toInt(Int32.complement(Int32.ofInt(i)));
+		#else 
+		return ~i;
+		#end
+	}
 	
 	/// This function is used to ensure that a floating point number is
 	/// not a NaN or infinity.

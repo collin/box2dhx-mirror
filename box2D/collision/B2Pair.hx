@@ -21,6 +21,7 @@
 package box2D.collision;
 
 import box2D.common.B2Settings;
+import box2D.common.math.B2Math;
 class B2Pair
  {
 	
@@ -30,10 +31,10 @@ class B2Pair
 	
 	
 	public inline function SetBuffered() : Void	{ status |= e_pairBuffered; }
-	public inline function ClearBuffered() : Void	{ status &= ~e_pairBuffered; }
+	public inline function ClearBuffered() : Void	{ status &= B2Math.complement(e_pairBuffered); }
 	public inline function IsBuffered():Bool	{ return (status & e_pairBuffered) == e_pairBuffered; }
 	public inline function SetRemoved() : Void		{ status |= e_pairRemoved; }
-	public inline function ClearRemoved() : Void	{ status &= ~e_pairRemoved; }
+	public inline function ClearRemoved() : Void	{ status &= B2Math.complement(e_pairRemoved); }
 	public inline function IsRemoved():Bool		{ return (status & e_pairRemoved) == e_pairRemoved; }
 	
 	public inline function SetFinal() : Void		{ status |= e_pairFinal; }

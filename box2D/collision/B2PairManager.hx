@@ -21,7 +21,9 @@
 package box2D.collision;
 
 import box2D.common.B2Settings;
-
+import box2D.common.math.B2Math;
+import haxe.Int32;
+using haxe.Int32;
 class B2PairManager
  {
 //public:
@@ -58,6 +60,7 @@ class B2PairManager
 		m_pairs[B2Settings.b2_maxPairs-1].next = B2Pair.b2_nullPair;
 		m_pairCount = 0;
 		m_pairBufferCount = 0;
+		m_freePair = 0;
 	}
 	//~B2PairManager();
 	
@@ -86,7 +89,8 @@ class B2PairManager
 		//B2Settings.b2Assert(id1 != b2_nullProxy && id2 != b2_nullProxy);
 		//B2Settings.b2Assert(m_pairBufferCount < b2_maxPairs);
 		
-		var pair:B2Pair = AddPair(proxyId1, proxyId2);
+		var pair : B2Pair = 
+			AddPair(proxyId1, proxyId2);
 		
 		// If this pair is not in the pair buffer ...
 		if (pair.IsBuffered() == false)
@@ -237,10 +241,13 @@ class B2PairManager
 			return pair;
 		}
 		
+		
 		//B2Settings.b2Assert(m_pairCount < B2Settings.b2_maxPairs && m_freePair != b2_nullPair);
 		
-		var pIndex:Int = m_freePair;
+		var pIndex : Int = m_freePair;
+		
 		pair = m_pairs[pIndex];
+		
 		m_freePair = pair.next;
 		
 		pair.proxyId1 = proxyId1;
@@ -369,16 +376,20 @@ class B2PairManager
 	
 // static
 	// Thomas Wang's hash, see: http://www.concentric.net/~Ttwang/tech/inthash.htm
+	
 	public static inline function calcHash(proxyId1:Int, proxyId2:Int):Int
 	{
+		
+		
 		var key:Int = ((proxyId2 << 16) & 0xffff0000) | proxyId1;
-		key = ~key + ((key << 15) & 0xFFFF8000);
+		key = B2Math.complement(key) + ((key << 15) & 0xFFFF8000);
 		key = key ^ ((key >> 12) & 0x000fffff);
 		key = key + ((key << 2) & 0xFFFFFFFC);
 		key = key ^ ((key >> 4) & 0x0fffffff);
 		key = key * 2057;
 		key = key ^ ((key >> 16) & 0x0000ffff);
 		return key;
+
 	}
 	
 	public static inline function Equals(pair:B2Pair, proxyId1:Int, proxyId2:Int):Bool

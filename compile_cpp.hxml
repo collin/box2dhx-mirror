@@ -1,0 +1,6 @@
+-main Main
+-cpp cpp
+--remap flash:neash
+-lib neash
+-lib nme
+

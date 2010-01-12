@@ -18,13 +18,17 @@
 package box2D.collision;
 	
 import box2D.collision.Features;
+import haxe.Int32;
+typedef I32 = haxe.Int32;
+
+using haxe.Int32;
 // We use contact ids to facilitate warm starting.
 class B2ContactID
  {
 	
 	public var key(getKey, setKey) :Int;
 	public function new(){
- 
+		_key = 0;
 		features = new Features();
 		features._m_id = this;
 		
@@ -42,10 +46,21 @@ class B2ContactID
 	}
 	public function setKey(value:Int):Int{
 		_key = value;
+		/*
+		#if neko
+		features._referenceEdge = I32.toInt(
+						I32.and(
+								I32.ofInt(_key), 
+									I32.make(0x0000, 0x00ff)));
+		features._incidentEdge = I32.toInt(I32.and((I32.shr(I32.and(I32.ofInt(_key), I32.make(0x0000, 0xff00)),8)),I32.make(0x0000, 0x00ff)));
+		features._incidentVertex = _key.ofInt().and(0x00ff.make(0x0000)).shr(16).and(I32.make(0x0000, 0x00ff)).toInt();
+		features._flip = (_key.ofInt().and(0xff00.make(0000)).shr(24)).and(I32.make(0x0000, 0x00ff)).toInt();
+		#else*/
 		features._referenceEdge = _key & 0x000000ff;
 		features._incidentEdge = ((_key & 0x0000ff00) >> 8) & 0x000000ff;
 		features._incidentVertex = ((_key & 0x00ff0000) >> 16) & 0x000000ff;
 		features._flip = ((_key & 0xff000000) >> 24) & 0x000000ff;
+		//#end
 		return value;
 	}
 	public var features:Features ;

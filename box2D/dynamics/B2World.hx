@@ -39,6 +39,8 @@ import box2D.collision.B2Proxy;
 import box2D.collision.B2OBB;
 import box2D.common.math.B2Mat22;
 
+
+
 class B2World
  {
 	
@@ -432,14 +434,21 @@ class B2World
 		step.positionCorrection = m_positionCorrection;
 		step.warmStarting = m_warmStarting;
 		
+		
+		
 		// Update contacts.
 		m_contactManager.Collide();
 		
+	
+		
 		// Integrate velocities, solve velocity constraints, and integrate positions.
+		
 		if (step.dt > 0.0)
 		{
 			Solve(step);
 		}
+		
+		
 		
 		// Handle TOI events.
 		if (m_continuousPhysics && step.dt > 0.0)
@@ -448,6 +457,7 @@ class B2World
 		}
 		
 		// Draw debug information.
+		
 		DrawDebugData();
 		
 		m_inv_dt0 = step.inv_dt;
@@ -502,28 +512,38 @@ class B2World
 		
 		// Clear all the island flags.
 		b = m_bodyList;
+		
+		
+		
 		while (b != null)
 		{
-			b.m_flags &= ~B2Body.e_islandFlag;
+			b.m_flags &= B2Math.complement(B2Body.e_islandFlag);
 			b = b.m_next;
 		}
-		var c:B2Contact = m_contactList;
+		
+		var c : B2Contact = m_contactList;
+		
+		
 		while (c != null)
 		{
-			c.m_flags &= ~B2Contact.e_islandFlag;
+			c.m_flags &= B2Math.complement(B2Contact.e_islandFlag);
 			c = c.m_next;
 		}
-		var j:B2Joint = m_jointList;
+		
+		var j : B2Joint = m_jointList;
+
 		while (j != null)
 		{
 			j.m_islandFlag = false;
 			j = j.m_next;
 		}
+		
 		// Build and simulate all awake islands.
 		var stackSize:Int = m_bodyCount;
 		//B2Body** stack = (B2Body**)m_stackAllocator.Allocate(stackSize * sizeof(B2Body*));
 		var stack:Array<B2Body> = new Array();
-		var seed:B2Body = m_bodyList;
+		var seed : B2Body = m_bodyList;
+		
 		while (seed != null)
 		{
 			if ((seed.m_flags & (B2Body.e_islandFlag | B2Body.e_sleepFlag | B2Body.e_frozenFlag)) != 0)
@@ -540,13 +560,14 @@ class B2World
 			stack[stackCount++] = seed;
 			seed.m_flags |= B2Body.e_islandFlag;
 			// Perform a depth first search (DFS) on the constraint graph.
+			
 			while (stackCount > 0)
 			{
 				// Grab the next body off the stack and add it to the island.
 				b = stack[--stackCount];
 				island.AddBody(b);
 				// Make sure the body is awake.
-				b.m_flags &= ~B2Body.e_sleepFlag;
+				b.m_flags &= B2Math.complement(B2Body.e_sleepFlag);
 				// To keep islands as small as possible, we don't
 				// propagate islands across static bodies.
 				if (b.IsStatic())
@@ -608,21 +629,27 @@ class B2World
 					jn = jn.next;
 				}
 			}
+			
+			
 			island.Solve(step, m_gravity, m_positionCorrection, m_allowSleep);
+			
 			//m_positionIterationCount = Math.max(m_positionIterationCount, island.m_positionIterationCount);
 			if (island.m_positionIterationCount > m_positionIterationCount) {
 				m_positionIterationCount = island.m_positionIterationCount;
 			}
+			
 			// Post solve cleanup.
+
 			for (i in 0...island.m_bodyCount)
 			{
 				// Allow static bodies to participate in other islands.
 				b = island.m_bodies[i];
 				if (b.IsStatic())
 				{
-					b.m_flags &= ~B2Body.e_islandFlag;
+					b.m_flags &= B2Math.complement(B2Body.e_islandFlag);
 				}
 			}
+			
 			seed = seed.m_next;
 		}
 		
@@ -630,6 +657,7 @@ class B2World
 		
 		// Synchronize shapes, check for out of range bodies.
 		b = m_bodyList;
+		
 		while (b != null)
 		{
 			if ((b.m_flags & (B2Body.e_sleepFlag | B2Body.e_frozenFlag)) !=0 )
@@ -657,7 +685,10 @@ class B2World
 		
 		// Commit shape proxy movements to the broad-phase so that new contacts are created.
 		// Also, some contacts can be destroyed.
+		
+		
 		m_broadPhase.Commit();
+		
 		
 	}
 	
@@ -681,7 +712,7 @@ class B2World
 		b = m_bodyList;
 		while (b != null)
 		{
-			b.m_flags &= ~B2Body.e_islandFlag;
+			b.m_flags &= B2Math.complement(B2Body.e_islandFlag);
 			b.m_sweep.t0 = 0.0;
 			b = b.m_next;
 		}
@@ -692,7 +723,7 @@ class B2World
 		while (c != null)
 		{
 			// Invalidate TOI
-			c.m_flags &= ~(B2Contact.e_toiFlag | B2Contact.e_islandFlag);
+			c.m_flags &= B2Math.complement(B2Contact.e_toiFlag | B2Contact.e_islandFlag);
 			c = c.m_next;
 			// Invalidate TOI
 		}
@@ -790,7 +821,7 @@ class B2World
 			
 			// The TOI contact likely has some new contact points.
 			minContact.Update(m_contactListener);
-			minContact.m_flags &= ~B2Contact.e_toiFlag;
+			minContact.m_flags &= B2Math.complement(B2Contact.e_toiFlag);
 			
 			if (minContact.m_manifoldCount == 0)
 			{
@@ -820,7 +851,7 @@ class B2World
 				island.AddBody(b);
 				
 				// Make sure the body is awake.
-				b.m_flags &= ~B2Body.e_sleepFlag;
+				b.m_flags &= B2Math.complement(B2Body.e_sleepFlag);
 				
 				// To keep islands as small as possible, we don't
 				// propagate islands across static bodies.
@@ -893,7 +924,7 @@ class B2World
 			{
 				// Allow bodies to participate in future TOI islands.
 				b = island.m_bodies[i];
-				b.m_flags &= ~B2Body.e_islandFlag;
+				b.m_flags &= B2Math.complement(B2Body.e_islandFlag);
 				
 				if (b.m_flags & (B2Body.e_sleepFlag | B2Body.e_frozenFlag) != 0)
 				{
@@ -921,7 +952,7 @@ class B2World
 				cn = b.m_contactList;
 				while (cn != null)
 				{
-					cn.contact.m_flags &= ~B2Contact.e_toiFlag;
+					cn.contact.m_flags &= B2Math.complement(B2Contact.e_toiFlag);
 					cn = cn.next;
 				}
 			}
@@ -930,7 +961,7 @@ class B2World
 			{
 				// Allow contacts to participate in future TOI islands.
 				c = island.m_contacts[i];
-				c.m_flags &= ~(B2Contact.e_toiFlag | B2Contact.e_islandFlag);
+				c.m_flags &= B2Math.complement(B2Contact.e_toiFlag | B2Contact.e_islandFlag);
 			}
 			
 			// Commit shape proxy movements to the broad-phase so that new contacts are created.

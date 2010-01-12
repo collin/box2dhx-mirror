@@ -72,6 +72,7 @@ import box2D.collision.B2Segment;
 import box2D.collision.B2TimeOfImpact;
 import box2D.collision.ClipVertex;
 import box2D.collision.Features;
+
 /*
 Position Correction Notes
 =========================
@@ -237,7 +238,10 @@ class B2Island
 		var contactSolver:B2ContactSolver = new B2ContactSolver(step, m_contacts, m_contactCount, m_allocator);
 		
 		// Initialize velocity constraints.
+		
 		contactSolver.InitVelocityConstraints(step);
+		
+		
 		
 		for (i in 0...m_jointCount)
 		{
@@ -246,6 +250,7 @@ class B2Island
 		}
 		
 		// Solve velocity constraints.
+		
 		for (i in 0...step.maxIterations)
 		{
 			contactSolver.SolveVelocityConstraints();
@@ -258,9 +263,11 @@ class B2Island
 		}
 		
 		// Post-solve (store impulses for warm starting).
+		
 		contactSolver.FinalizeVelocityConstraints();
 		
 		// Integrate positions.
+		
 		for (i in 0...m_bodyCount)
 		{
 			b = m_bodies[i];
@@ -283,6 +290,7 @@ class B2Island
 			
 			// Note: shapes are synchronized later.
 		}
+		
 		
 		if (correctPositions)
 		{
@@ -313,6 +321,8 @@ class B2Island
 				}
 			}
 		}
+		
+		
 		
 		Report(contactSolver.m_constraints);
 		
@@ -362,6 +372,7 @@ class B2Island
 				}
 			}
 		}
+		
 	}
 	
 	

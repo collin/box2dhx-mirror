@@ -524,7 +524,7 @@ class B2Body
 		}
 		else
 		{
-			m_flags &= ~e_bulletFlag;
+			m_flags &= B2Math.complement(e_bulletFlag);
 		}
 	}
 	/// Is this body static (immovable)?
@@ -551,13 +551,13 @@ class B2Body
 		}
 		else
 		{
-			m_flags &= ~e_allowSleepFlag;
+			m_flags &= B2Math.complement(e_allowSleepFlag);
 			WakeUp();
 		}
 	}
 	/// Wake up this body so it will begin simulating.
 	public function WakeUp() : Void{
-		m_flags &= ~e_sleepFlag;
+		m_flags &= B2Math.complement(e_sleepFlag);
 		m_sleepTime = 0.0;
 	}
 	/// Put this body to sleep so it will stop simulating.
