@@ -231,7 +231,7 @@ class B2Contact
 		// Slow contacts don't generate TOI events.
 		if (body1.IsStatic() || body1.IsBullet() || body2.IsStatic() || body2.IsBullet())
 		{
-			m_flags &= Int32.toInt(Int32.neg(Int32.ofInt(e_slowFlag)));
+			m_flags &= B2Math.complement(e_slowFlag);
 		}
 		else
 		{
